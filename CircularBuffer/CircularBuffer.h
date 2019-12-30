@@ -2,20 +2,22 @@
 
 #include <memory>
 #include <iostream>
+#include <sstream>
 
 template <typename BufferType>
 
 class CircularBuffer
 {
 public:
-	CircularBuffer(unsigned int capacity = 10)
+	explicit CircularBuffer(unsigned int capacity = 10) 
+		: _capacity(capacity), _pointerArray(new BufferType[capacity]), _indexToMemIndexTable(new int[capacity]), _freeMemIndexStack(new int[capacity])
 	{
-		_capacity = capacity;
-
-		std::unique_ptr<BufferType[]> pointerArray(new BufferType[capacity]);
-
-		std::unique_ptr<int[]> indexToMemIndexTable(new int[capacity]); // -1 means not used
-		std::unique_ptr<int[]> freeMemIndexStack(new int[capacity]);  //  -1 means occupied slot
+		for (int i = 0; i < capacity; i++)
+		{
+			_indexToMemIndexTable[i] = -1;
+			// Every index is available. Populate with range of (0,(capacity - 1))
+			_freeMemIndexStack[i] = i;
+		}
 	}
 
 	void add(BufferType toAdd) 
