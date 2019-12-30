@@ -42,9 +42,7 @@ TEST_F(CircularBufferTest, IntInsertGet) {
 	cb0_.add(123);
 	cb0_.add(123456);
 	cb0_.insert(321, 2);
-	EXPECT_EQ(cb0_.get(0), 12);
-	EXPECT_EQ(cb0_.get(1), 1234);
 	EXPECT_EQ(cb0_.get(2), 321);
-	EXPECT_EQ(cb0_.get(3), 123);
-	EXPECT_EQ(cb0_.get(4), 123456);
+	cb0_.insert(12121, 5);
+	EXPECT_EQ(cb0_.get(5), 12121);
 }

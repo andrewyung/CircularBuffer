@@ -9,7 +9,7 @@ template <typename BufferType>
 class CircularBuffer
 {
 public:
-	explicit CircularBuffer(unsigned int capacity = 10) 
+	CircularBuffer(unsigned int capacity = 10) 
 		: _capacity(capacity), _pointerArray(new BufferType[capacity]), _indexToMemIndexTable(new int[capacity]), _freeMemIndexStack(new int[capacity])
 	{
 		for (int i = 0; i < capacity; i++)
@@ -22,16 +22,20 @@ public:
 
 	void add(BufferType toAdd) 
 	{
+		// Look for free spot in memory
 		int availableIndex = _freeMemIndexStack[_currentFreeMemIndex];
+		// Assign to free spot
 		_pointerArray[availableIndex] = toAdd;
+		// Updated table (index to memory index)
 		_indexToMemIndexTable[_size] = availableIndex;
 		
+		// "Pop" the top of the stack
 		_currentFreeMemIndex++;
 		_size++;
 	}
 	void insert(BufferType toAdd, int atIndex) 
 	{
-		if (atIndex >= _size)
+		if (atIndex > _size)
 		{
 			std::stringstream ss;
 			ss << "Insert at " << atIndex << " is out of bounds. Size: " << _size;
@@ -44,6 +48,7 @@ public:
 			_indexToMemIndexTable[i] = _indexToMemIndexTable[i - 1];
 		}
 
+		// Insert at index and update tables
 		int availableIndex = _freeMemIndexStack[_currentFreeMemIndex];
 		_pointerArray[availableIndex] = toAdd;
 		_indexToMemIndexTable[atIndex] = availableIndex;
@@ -64,7 +69,7 @@ public:
 private:
 	std::unique_ptr<BufferType[]> _pointerArray;
 	std::unique_ptr<int[]> _indexToMemIndexTable; // -1 means index not used 
-	std::unique_ptr<int[]> _freeMemIndexStack;
+	std::unique_ptr<int[]> _freeMemIndexStack; // Assume 0 is top of stack and n is bottom
 
 	int _currentFreeMemIndex = 0;
 	unsigned int _capacity;
