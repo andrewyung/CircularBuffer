@@ -68,11 +68,33 @@ public:
 		_currentFreeMemIndex++;
 		_size++;
 	}
-	void remove() {}
 	
 	/**
 	 * Remove and retrieve from head of the buffer.
 	 */
+	BufferType remove() 
+	{
+		if (_size == 0)
+		{
+			throw std::out_of_range("Can't remove from empty CircularBuffer");
+		}
+
+		int memLocationIndex = _indexToMemIndexTable[0];
+		BufferType head = (BufferType) _pointerArray[_indexToMemIndexTable[0]];
+		
+		// Shift all elements left
+		for (int i = 0; i < _size - 1; i++)
+		{
+			_indexToMemIndexTable[i] = _indexToMemIndexTable[i + 1];
+		}
+		
+		_currentFreeMemIndex--;
+		_size--;
+		// Include index at end back into free index stack
+		_freeMemIndexStack[_currentFreeMemIndex] = memLocationIndex;
+
+		return head;
+	}
 	BufferType get(int atIndex) 
 	{
 		return _pointerArray[_indexToMemIndexTable[atIndex]];
