@@ -20,6 +20,11 @@ public:
 		}
 	}
 
+	/**
+	 * Add at the tail of the buffer
+	 *
+	 * @param[in] toAdd the data to add to buffer
+	 */
 	void add(BufferType toAdd) 
 	{
 		// Look for free spot in memory
@@ -33,6 +38,13 @@ public:
 		_currentFreeMemIndex++;
 		_size++;
 	}
+	
+	/**
+	 * Insert data into buffer at an index.
+	 *
+	 * @param[in] toAdd the data to add to buffer
+	 * @param[in] atIndex the index to insert data
+	 */
 	void insert(BufferType toAdd, int atIndex) 
 	{
 		if (atIndex > _size)
@@ -57,6 +69,10 @@ public:
 		_size++;
 	}
 	void remove() {}
+	
+	/**
+	 * Remove and retrieve from head of the buffer.
+	 */
 	BufferType get(int atIndex) 
 	{
 		return _pointerArray[_indexToMemIndexTable[atIndex]];
