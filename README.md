@@ -4,4 +4,5 @@ Uses table for looking up index to memory indexed locations and stack for availa
 
 ## TODO
 Automatically resize buffer when not enough allocated originally
+
 More test cases
