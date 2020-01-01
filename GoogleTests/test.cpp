@@ -67,3 +67,36 @@ TEST_F(CircularBufferTest, IntRemoveGet) {
 	EXPECT_EQ(cb1_.get(1), 123);
 	EXPECT_EQ(cb1_.get(2), 123456);
 }
+
+// Test add and remove
+TEST_F(CircularBufferTest, IntAddRemove) {
+
+	int head0 = cb1_.remove();
+	EXPECT_EQ(head0, 12);
+
+	cb1_.add(345);
+	int head1 = cb1_.remove();
+	EXPECT_EQ(head1, 1234);
+
+	int head2 = cb1_.remove();
+	EXPECT_EQ(head2, 123);
+
+	int head3 = cb1_.remove();
+	EXPECT_EQ(head3, 123456);
+
+	cb1_.add(234);
+	cb1_.add(23456);
+	cb1_.add(23);
+
+	int head4 = cb1_.remove();
+	EXPECT_EQ(head4, 345);
+
+	int head5 = cb1_.remove();
+	EXPECT_EQ(head5, 234);
+
+	int head6 = cb1_.remove();
+	EXPECT_EQ(head6, 23456);
+
+	int head7 = cb1_.remove();
+	EXPECT_EQ(head7, 23);
+}
