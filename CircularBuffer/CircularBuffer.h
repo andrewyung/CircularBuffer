@@ -3,6 +3,7 @@
 #include <memory>
 #include <iostream>
 #include <sstream>
+#include <mutex>
 
 template <typename BufferType>
 
@@ -27,6 +28,8 @@ public:
 	 */
 	void add(BufferType toAdd) 
 	{
+		std::lock_guard<std::mutex> lock(bufferMutex);
+
 		// Look for free spot in memory
 		int availableIndex = _freeMemIndexStack[_currentFreeMemIndex];
 		// Assign to free spot
@@ -47,6 +50,9 @@ public:
 	 */
 	void insert(BufferType toAdd, int atIndex) 
 	{
+		std::lock_guard<std::mutex> lock(bufferMutex);
+
+		// Exception
 		if (atIndex > _size)
 		{
 			std::stringstream ss;
@@ -74,6 +80,9 @@ public:
 	 */
 	BufferType remove() 
 	{
+		std::lock_guard<std::mutex> lock(bufferMutex);
+
+		// Exception
 		if (_size == 0)
 		{
 			throw std::out_of_range("Can't remove from empty CircularBuffer");
@@ -97,14 +106,20 @@ public:
 	}
 	BufferType get(int atIndex) 
 	{
+		std::lock_guard<std::mutex> lock(bufferMutex);
+
 		return _pointerArray[_indexToMemIndexTable[atIndex]];
 	}
 	unsigned int size() 
 	{
+		std::lock_guard<std::mutex> lock(bufferMutex);
+
 		return _size;
 	}
 
 private:
+	std::mutex bufferMutex;
+
 	std::unique_ptr<BufferType[]> _pointerArray;
 	std::unique_ptr<int[]> _indexToMemIndexTable; // -1 means index not used 
 	std::unique_ptr<int[]> _freeMemIndexStack; // Assume 0 is top of stack and n is bottom
