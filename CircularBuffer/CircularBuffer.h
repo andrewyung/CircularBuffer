@@ -136,8 +136,16 @@ private:
 	unsigned int _capacity;
 	unsigned int _size = 0;
 
-	void resize()
+	int capacityIncrease(int multiplier = 2)
 	{
+		return _capacity * multiplier;
+	}
+
+	// TODO: implementation
+	void resize(int newCapacityLimit)
+	{
+		_capacity = newCapacityLimit;
+
 
 	}
 };
