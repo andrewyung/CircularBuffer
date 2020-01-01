@@ -88,6 +88,7 @@ public:
 			throw std::out_of_range("Can't remove from empty CircularBuffer");
 		}
 
+		// Keep head of buffer as we will return this
 		int memLocationIndex = _indexToMemIndexTable[0];
 		BufferType head = (BufferType) _pointerArray[_indexToMemIndexTable[0]];
 		
