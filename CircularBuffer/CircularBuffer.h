@@ -52,8 +52,8 @@ public:
 	{
 		std::lock_guard<std::mutex> lock(bufferMutex);
 
-		// Exception
-		if (atIndex > _size)
+		// Exception out of bounds
+		if (atIndex < 0 || atIndex > _size)
 		{
 			std::stringstream ss;
 			ss << "Insert at " << atIndex << " is out of bounds. Size: " << _size;
@@ -82,7 +82,7 @@ public:
 	{
 		std::lock_guard<std::mutex> lock(bufferMutex);
 
-		// Exception
+		// Exception empty buffer
 		if (_size == 0)
 		{
 			throw std::out_of_range("Can't remove from empty CircularBuffer");
@@ -106,6 +106,13 @@ public:
 	}
 	BufferType get(int atIndex) 
 	{
+		// Exception out of bounds
+		if (atIndex < 0 || atIndex > _size - 1)
+		{
+			std::stringstream ss;
+			ss << "Get at " << atIndex << " is out of bounds. Size: " << _size;
+			throw std::out_of_range(ss.str());
+		}
 		std::lock_guard<std::mutex> lock(bufferMutex);
 
 		return _pointerArray[_indexToMemIndexTable[atIndex]];
