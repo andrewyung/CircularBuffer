@@ -1,4 +1,5 @@
 #include "pch.h"
+#include <thread>
 
 class CircularBufferTest : public ::testing::Test
 {
@@ -99,4 +100,30 @@ TEST_F(CircularBufferTest, IntAddRemove) {
 
 	int head7 = cb1_.remove();
 	EXPECT_EQ(head7, 23);
+}
+
+void bufferAdd(CircularBuffer<int>* cb, int addValue)
+{
+	cb->add(addValue);
+}
+TEST_F(CircularBufferTest, TheadAdd) 
+{
+	std::thread threads[10];
+	for (int i = 0; i < 10; i++)
+		threads[i] = std::thread(bufferAdd, &cb0_, i + 1);
+
+	for (auto& th : threads) th.join();
+
+	EXPECT_EQ(cb0_.remove(), 1);
+	EXPECT_EQ(cb0_.remove(), 2);
+	EXPECT_EQ(cb0_.remove(), 3);
+	EXPECT_EQ(cb0_.remove(), 4);
+	EXPECT_EQ(cb0_.remove(), 5);
+	EXPECT_EQ(cb0_.remove(), 6);
+	EXPECT_EQ(cb0_.remove(), 7);
+	EXPECT_EQ(cb0_.remove(), 8);
+	EXPECT_EQ(cb0_.remove(), 9);
+	EXPECT_EQ(cb0_.remove(), 10);
+
+	EXPECT_EQ(cb0_.size(), 0);
 }
