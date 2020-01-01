@@ -47,6 +47,8 @@ public:
 	 *
 	 * @param[in] toAdd the data to add to buffer
 	 * @param[in] atIndex the index to insert data
+	 *
+	 * @throws std::out_of_range Thrown if "atIndex" is less than 0 or greater than size+1
 	 */
 	void insert(BufferType toAdd, int atIndex) 
 	{
@@ -76,7 +78,9 @@ public:
 	}
 	
 	/**
-	 * Remove and retrieve from head of the buffer.
+	 * Remove and retrieve from head of the buffer
+	 *
+	 * @throws std::out_of_range Thrown if buffer is empty
 	 */
 	BufferType remove() 
 	{
@@ -105,6 +109,14 @@ public:
 
 		return head;
 	}
+
+	/*
+	* Returns data at index
+	* 
+	* @param[in] atIndex the index to retrieve at
+	*
+	* @throws std::out_of_range Thrown if "atIndex" is less than 0 or greater than size
+	*/
 	BufferType get(int atIndex) 
 	{
 		// Exception out of bounds
@@ -118,6 +130,10 @@ public:
 
 		return _pointerArray[_indexToMemIndexTable[atIndex]];
 	}
+
+	/*
+	* Returns the number of elements in buffer
+	*/
 	unsigned int size() 
 	{
 		std::lock_guard<std::mutex> lock(bufferMutex);
@@ -136,6 +152,11 @@ private:
 	unsigned int _capacity;
 	unsigned int _size = 0;
 
+	/*
+	* Calculates the new capacity based on multiplier
+	*
+	* @param[in] multiplier is the multiplicative increase
+	*/
 	int capacityIncrease(int multiplier = 2)
 	{
 		return _capacity * multiplier;
