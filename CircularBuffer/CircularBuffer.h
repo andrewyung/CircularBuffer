@@ -4,13 +4,14 @@
 #include <iostream>
 #include <sstream>
 #include <mutex>
+#include <algorithm>
 
 template <typename BufferType>
 
 class CircularBuffer
 {
 public:
-	CircularBuffer(unsigned int capacity = 10) 
+	CircularBuffer(int capacity = 10) 
 		: _capacity(capacity), _pointerArray(new BufferType[capacity]), _indexToMemIndexTable(new int[capacity]), _freeMemIndexStack(new int[capacity])
 	{
 		for (int i = 0; i < capacity; i++)
@@ -29,6 +30,11 @@ public:
 	void add(BufferType toAdd) 
 	{
 		std::lock_guard<std::mutex> lock(bufferMutex);
+
+		if (_size = _capacity)
+		{
+			resize(capacityIncrease());
+		}
 
 		// Look for free spot in memory
 		int availableIndex = _freeMemIndexStack[_currentFreeMemIndex];
@@ -52,8 +58,6 @@ public:
 	 */
 	void insert(BufferType toAdd, int atIndex) 
 	{
-		std::lock_guard<std::mutex> lock(bufferMutex);
-
 		// Exception out of bounds
 		if (atIndex < 0 || atIndex > _size)
 		{
@@ -61,6 +65,8 @@ public:
 			ss << "Insert at " << atIndex << " is out of bounds. Size: " << _size;
 			throw std::out_of_range(ss.str());
 		}
+
+		std::lock_guard<std::mutex> lock(bufferMutex);
 
 		// Shift all elements right of atIndex right by 1
 		for (int i = _size; i > atIndex; i--)
@@ -84,13 +90,13 @@ public:
 	 */
 	BufferType remove() 
 	{
-		std::lock_guard<std::mutex> lock(bufferMutex);
-
 		// Exception empty buffer
 		if (_size == 0)
 		{
 			throw std::out_of_range("Can't remove from empty CircularBuffer");
 		}
+
+		//std::lock_guard<std::mutex> lock(bufferMutex);
 
 		// Keep head of buffer as we will return this
 		int memLocationIndex = _indexToMemIndexTable[0];
@@ -120,12 +126,13 @@ public:
 	BufferType get(int atIndex) 
 	{
 		// Exception out of bounds
-		if (atIndex < 0 || atIndex > _size - 1)
+		if (atIndex < (unsigned int) 0 || atIndex > _size - 1)
 		{
 			std::stringstream ss;
 			ss << "Get at " << atIndex << " is out of bounds. Size: " << _size;
 			throw std::out_of_range(ss.str());
 		}
+		
 		std::lock_guard<std::mutex> lock(bufferMutex);
 
 		return _pointerArray[_indexToMemIndexTable[atIndex]];
@@ -144,13 +151,13 @@ public:
 private:
 	std::mutex bufferMutex;
 
-	std::unique_ptr<BufferType[]> _pointerArray;
-	std::unique_ptr<int[]> _indexToMemIndexTable; // -1 means index not used 
-	std::unique_ptr<int[]> _freeMemIndexStack; // Assume 0 is top of stack and n is bottom
+	std::shared_ptr<BufferType[]> _pointerArray;
+	std::shared_ptr<int[]> _indexToMemIndexTable; // -1 means index not used 
+	std::shared_ptr<int[]> _freeMemIndexStack; // Assume 0 is top of stack and n is bottom
 
 	int _currentFreeMemIndex = 0;
-	unsigned int _capacity;
-	unsigned int _size = 0;
+	int _capacity;
+	int _size = 0;
 
 	/*
 	* Calculates the new capacity based on multiplier
@@ -165,8 +172,12 @@ private:
 	// TODO: implementation
 	void resize(int newCapacityLimit)
 	{
+		//_pointerArray = std::make_shared<BufferType[]>(newCapacityLimit);
+
+		//_indexToMemIndexTable = std::make_shared<int[]>(newCapacityLimit);
+
+		//_freeMemIndexStack = std::make_shared<int[]>(newCapacityLimit);
+
 		_capacity = newCapacityLimit;
-
-
 	}
 };

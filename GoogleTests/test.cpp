@@ -127,3 +127,4 @@ TEST_F(CircularBufferTest, TheadAdd)
 
 	EXPECT_EQ(cb0_.size(), 0);
 }
+
