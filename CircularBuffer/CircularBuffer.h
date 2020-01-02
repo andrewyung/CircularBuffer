@@ -126,7 +126,7 @@ public:
 	BufferType get(int atIndex) 
 	{
 		// Exception out of bounds
-		if (atIndex < (unsigned int) 0 || atIndex > _size - 1)
+		if (atIndex < 0 || atIndex > _size - 1)
 		{
 			std::stringstream ss;
 			ss << "Get at " << atIndex << " is out of bounds. Size: " << _size;
@@ -141,7 +141,7 @@ public:
 	/*
 	* Returns the number of elements in buffer
 	*/
-	unsigned int size() 
+	int size() 
 	{
 		std::lock_guard<std::mutex> lock(bufferMutex);
 
