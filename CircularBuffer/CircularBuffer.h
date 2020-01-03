@@ -5,6 +5,9 @@
 #include <sstream>
 #include <mutex>
 
+/**
+* @tparam BufferType the handling type of this CircularBuffer
+*/
 template <typename BufferType>
 
 class CircularBuffer
