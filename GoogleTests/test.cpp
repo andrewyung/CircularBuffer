@@ -69,13 +69,14 @@ TEST_F(CircularBufferTest, IntRemoveGet) {
 	EXPECT_EQ(cb1_.get(2), 123456);
 }
 
-// Test add and remove
+// Test add and remove. Check add and remove order is correct
 TEST_F(CircularBufferTest, IntAddRemove) {
 
 	int head0 = cb1_.remove();
 	EXPECT_EQ(head0, 12);
 
 	cb1_.add(345);
+
 	int head1 = cb1_.remove();
 	EXPECT_EQ(head1, 1234);
 
@@ -102,6 +103,7 @@ TEST_F(CircularBufferTest, IntAddRemove) {
 	EXPECT_EQ(head7, 23);
 }
 
+// Multi-threading add into same CircularBuffer and check for consistency
 void bufferAdd(CircularBuffer<int>* cb, int addValue)
 {
 	cb->add(addValue);
@@ -126,5 +128,28 @@ TEST_F(CircularBufferTest, TheadAdd)
 	EXPECT_EQ(cb0_.remove(), 10);
 
 	EXPECT_EQ(cb0_.size(), 0);
+}
+
+// Test resizing of buffer when adding beyond capacity
+TEST_F(CircularBufferTest, AddResize)
+{
+	cb1_.add(1);
+	cb1_.add(2);
+	cb1_.add(3);
+	cb1_.add(4);
+	cb1_.add(5);
+	cb1_.add(6);
+
+	EXPECT_EQ(cb1_.size(), 10);
+	cb1_.add(7);
+	cb1_.add(8);
+	cb1_.add(9);
+	cb1_.add(10);
+
+	EXPECT_EQ(cb1_.size(), 14);
+	EXPECT_EQ(cb1_.get(0), 12);
+	EXPECT_EQ(cb1_.get(1), 1234);
+	EXPECT_EQ(cb1_.get(2), 123);
+	EXPECT_EQ(cb1_.get(3), 123456);
 }
 
