@@ -164,7 +164,8 @@ TEST_F(CircularBufferTest, PointerAddResize)
 	cb1_.add(5);
 	cb1_.add(6);
 
-	int* threePtr = &(cb1_.get(6));
+	int* threePtr = &(cb1_.get(6)); // By reference
+	int threeValue = (cb1_.get(6)); // By value
 	EXPECT_EQ(cb1_.get(6), 3); // Validate object at index
 
 	cb1_.add(7);
@@ -173,4 +174,8 @@ TEST_F(CircularBufferTest, PointerAddResize)
 	cb1_.add(10);
 
 	EXPECT_TRUE(*threePtr != 3); // Validate pointer to location is no longer valid
+	EXPECT_TRUE(threeValue == 3); // Validate that return by value is unchanged
+	threeValue = 1;
+	EXPECT_EQ(cb1_.get(6), 3); // Validate object at index
+
 }
