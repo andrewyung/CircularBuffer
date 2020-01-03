@@ -10,6 +10,7 @@ protected:
 		cb1_.add(1234);
 		cb1_.add(123);
 		cb1_.add(123456);
+
 	}
 
 	CircularBuffer<int> cb0_;
@@ -153,3 +154,23 @@ TEST_F(CircularBufferTest, AddResize)
 	EXPECT_EQ(cb1_.get(3), 123456);
 }
 
+// Testing of invalidation from resize
+TEST_F(CircularBufferTest, PointerAddResize)
+{
+	cb1_.add(1);
+	cb1_.add(2);
+	cb1_.add(3);
+	cb1_.add(4);
+	cb1_.add(5);
+	cb1_.add(6);
+
+	int* threePtr = &(cb1_.get(6));
+	EXPECT_EQ(cb1_.get(6), 3); // Validate object at index
+
+	cb1_.add(7);
+	cb1_.add(8);
+	cb1_.add(9);
+	cb1_.add(10);
+
+	EXPECT_TRUE(*threePtr != 3); // Validate pointer to location is no longer valid
+}
