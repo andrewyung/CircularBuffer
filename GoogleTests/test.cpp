@@ -175,7 +175,4 @@ TEST_F(CircularBufferTest, PointerAddResize)
 
 	EXPECT_TRUE(*threePtr != 3); // Validate pointer to location is no longer valid
 	EXPECT_TRUE(threeValue == 3); // Validate that return by value is unchanged
-	threeValue = 1;
-	EXPECT_EQ(cb1_.get(6), 3); // Validate object at index
-
 }
