@@ -134,7 +134,7 @@ public:
 	*
 	* @throws std::out_of_range Thrown if "atIndex" is less than 0 or greater than size
 	*/
-	BufferType get(int atIndex)
+	BufferType& get(int atIndex)
 	{
 		// Exception out of bounds
 		if (atIndex < 0 || atIndex > _size - 1)
