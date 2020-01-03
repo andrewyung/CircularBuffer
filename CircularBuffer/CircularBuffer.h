@@ -181,7 +181,7 @@ private:
 	
 	/*
 	* Resizes (and copies) circular buffer memory allocations to a larger capacity.
-	* Likely to invalidate pointers to previous memory locations
+	* Possible to invalidate pointers
 	*
 	* @param[in] newCapacityLimit the capacity to resize to
 	*/
