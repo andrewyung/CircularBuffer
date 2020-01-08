@@ -142,6 +142,8 @@ TEST_F(CircularBufferTest, AddResize)
 	cb1_.add(6);
 
 	EXPECT_EQ(cb1_.size(), 10);
+	cb1_.resize(14);
+
 	cb1_.add(7);
 	cb1_.add(8);
 	cb1_.add(9);
@@ -172,7 +174,11 @@ TEST_F(CircularBufferTest, PointerAddResize)
 	cb1_.add(8);
 	cb1_.add(9);
 	cb1_.add(10);
+	cb1_.add(11);
+	cb1_.add(12);
+	cb1_.add(13);
+	cb1_.add(14);
 
-	EXPECT_TRUE(*threePtr != 3); // Validate pointer to location is no longer valid
-	EXPECT_TRUE(threeValue == 3); // Validate that return by value is unchanged
+	EXPECT_EQ(*threePtr, 13); // Validate pointer to location is no longer valid (as it has been overwritten)
+	EXPECT_EQ(threeValue, 3); // Validate that return by value is unchanged
 }

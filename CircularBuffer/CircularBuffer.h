@@ -37,6 +37,11 @@ public:
 	 */
 	void add(BufferType toAdd)
 	{
+		if (_size == _capacity)
+		{
+			remove();
+		}
+
 		std::lock_guard<std::mutex> lock(bufferMutex);
 
 		// Look for free spot in memory
@@ -61,12 +66,9 @@ public:
 	 */
 	void insert(BufferType toAdd, int atIndex)
 	{
-		// Exception out of bounds
-		if (atIndex < 0 || atIndex > _size)
+		if (_size == _capacity)
 		{
-			std::stringstream ss;
-			ss << "Insert at " << atIndex << " is out of bounds. Size: " << _size;
-			throw std::out_of_range(ss.str());
+			remove();
 		}
 
 		std::lock_guard<std::mutex> lock(bufferMutex);
@@ -157,7 +159,7 @@ public:
 	*
 	* @param[in] newCapacityLimit the capacity to resize to
 	*/
-	void resize(int newCapacityLimit)
+	void resize(int newCapacityLimit = capacityIncrease())
 	{
 		if (newCapacityLimit < _capacity)
 		{
@@ -200,8 +202,6 @@ private:
 	int _currentFreeMemIndex = 0;
 	int _capacity;
 	int _size = 0;
-
-	int head;
 
 	/*
 	* Calculates the new capacity based on multiplier
