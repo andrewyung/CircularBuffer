@@ -39,11 +39,6 @@ public:
 	{
 		std::lock_guard<std::mutex> lock(bufferMutex);
 
-		if (_size == _capacity)
-		{
-			resize(capacityIncrease());
-		}
-
 		// Look for free spot in memory
 		int availableIndex = _freeMemIndexStack[_currentFreeMemIndex];
 		// Assign to free spot
@@ -75,11 +70,6 @@ public:
 		}
 
 		std::lock_guard<std::mutex> lock(bufferMutex);
-
-		if (_size == _capacity)
-		{
-			resize(capacityIncrease());
-		}
 
 		// Shift all elements right of atIndex right by 1
 		for (int i = _size; i > atIndex; i--)
@@ -161,27 +151,6 @@ public:
 		return _size;
 	}
 
-private:
-	std::mutex bufferMutex;
-
-	std::unique_ptr<BufferType[]> _pointerArray;
-	std::unique_ptr<int[]> _indexToMemIndexTable; // -1 means index not used 
-	std::unique_ptr<int[]> _freeMemIndexStack; // Assume 0 is top of stack and n is bottom
-
-	int _currentFreeMemIndex = 0;
-	int _capacity;
-	int _size = 0;
-
-	/*
-	* Calculates the new capacity based on multiplier
-	*
-	* @param[in] multiplier is the multiplicative increase
-	*/
-	int capacityIncrease(int multiplier = 2)
-	{
-		return _capacity * multiplier;
-	}
-	
 	/*
 	* Resizes (and copies) circular buffer memory allocations to a larger capacity.
 	* Possible to invalidate pointers
@@ -219,5 +188,28 @@ private:
 		}
 
 		_capacity = newCapacityLimit;
+	}
+
+private:
+	std::mutex bufferMutex;
+
+	std::unique_ptr<BufferType[]> _pointerArray;
+	std::unique_ptr<int[]> _indexToMemIndexTable; // -1 means index not used 
+	std::unique_ptr<int[]> _freeMemIndexStack; // Assume 0 is top of stack and n is bottom
+
+	int _currentFreeMemIndex = 0;
+	int _capacity;
+	int _size = 0;
+
+	int head;
+
+	/*
+	* Calculates the new capacity based on multiplier
+	*
+	* @param[in] multiplier is the multiplicative increase
+	*/
+	int capacityIncrease(int multiplier = 2)
+	{
+		return _capacity * multiplier;
 	}
 };
